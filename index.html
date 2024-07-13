@@ -18,7 +18,7 @@
               return t.popup({
                 title: 'ArchHypo Values',
                 url: './form.html',
-                height: 500
+                height: 400
               });
             }
           }
@@ -31,8 +31,14 @@
             text: "ArchHypo Metrics",
             callback: function (t) {
               console.log("Botão 'ArchHypo Metrics' clicado.");
-              return t.board('all').then(function (board) {
+              return t.board('cards').then(function (board) {
                 console.log("Informações do board obtidas:", board);
+                if (!board.cards) {
+                  console.error("Nenhuma carta encontrada no board.");
+                  alert("Nenhuma carta encontrada no board.");
+                  return;
+                }
+
                 let cardPromises = board.cards.map(function (card) {
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
