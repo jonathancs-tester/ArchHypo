@@ -62,6 +62,29 @@
             }
           }
         ];
+      },
+      'card-badges': function (t, options) {
+        return t.card('id').then(function (card) {
+          return Promise.all([
+            t.get(card.id, 'shared', 'incerteza'),
+            t.get(card.id, 'shared', 'impacto')
+          ]).then(function ([incerteza, impacto]) {
+            let badges = [];
+            if (incerteza) {
+              badges.push({
+                text: `Incerteza: ${incerteza}`,
+                color: 'red'
+              });
+            }
+            if (impacto) {
+              badges.push({
+                text: `Impacto: ${impacto}`,
+                color: 'blue'
+              });
+            }
+            return badges;
+          });
+        });
       }
     });
   </script>
