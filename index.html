@@ -13,20 +13,53 @@
         return [
           {
             icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
-            text: "Adicionar Valores",
+            text: "ArchHypo Values",
             callback: function (t) {
               return t.popup({
-                title: 'Adicionar Valores',
+                title: 'ArchHypo Values',
                 url: './form.html',
-                height: 300
+                height: 600
               });
             }
           }
-        ]
+        ];
+      },
+      'board-buttons': function (t, options) {
+        return [
+          {
+            icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
+            text: "ArchHypo Metrics",
+            callback: function (t) {
+              return t.board('all').then(function (board) {
+                let cardPromises = board.cards.map(function (card) {
+                  return t.get(card.id, 'shared', 'incerteza').then(function (incerteza) {
+                    return t.get(card.id, 'shared', 'impacto').then(function (impacto) {
+                      return {
+                        incerteza: parseFloat(incerteza) || 0,
+                        impacto: parseFloat(impacto) || 0
+                      };
+                    });
+                  });
+                });
+
+                return Promise.all(cardPromises).then(function (results) {
+                  let totalIncerteza = 0;
+                  let totalImpacto = 0;
+
+                  results.forEach(function (result) {
+                    totalIncerteza += result.incerteza;
+                    totalImpacto += result.impacto;
+                  });
+
+                  alert(`Total Incerteza: ${totalIncerteza}\nTotal Impacto: ${totalImpacto}`);
+                });
+              });
+            }
+          }
+        ];
       }
-    })
+    });
   </script>
 </body>
 
 </html>
-
