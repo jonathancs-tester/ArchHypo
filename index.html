@@ -18,7 +18,7 @@
               return t.popup({
                 title: 'ArchHypo Values',
                 url: './form.html',
-                height: 600
+                height: 500
               });
             }
           }
@@ -30,7 +30,9 @@
             icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
             text: "ArchHypo Metrics",
             callback: function (t) {
+              console.log("Botão 'ArchHypo Metrics' clicado.");
               return t.board('all').then(function (board) {
+                console.log("Informações do board obtidas:", board);
                 let cardPromises = board.cards.map(function (card) {
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
@@ -55,6 +57,7 @@
                     totalImpacto += result.impacto;
                   });
 
+                  console.log(`Total Incerteza: ${totalIncerteza}, Total Impacto: ${totalImpacto}`);
                   alert(`Total Incerteza: ${totalIncerteza}\nTotal Impacto: ${totalImpacto}`);
                 }).catch(function (error) {
                   console.error('Erro ao calcular as métricas:', error);
