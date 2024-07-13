@@ -31,15 +31,15 @@
             text: "ArchHypo Metrics",
             callback: function (t) {
               console.log("Botão 'ArchHypo Metrics' clicado.");
-              return t.board('cards').then(function (board) {
-                console.log("Informações do board obtidas:", board);
-                if (!board.cards) {
-                  console.error("Nenhuma carta encontrada no board.");
-                  alert("Nenhuma carta encontrada no board.");
+              return t.cards('all').then(function (cards) {
+                console.log("Cartões obtidos:", cards);
+                if (!cards) {
+                  console.error("Nenhum cartão encontrado.");
+                  alert("Nenhum cartão encontrado.");
                   return;
                 }
 
-                let cardPromises = board.cards.map(function (card) {
+                let cardPromises = cards.map(function (card) {
                   return Promise.all([
                     t.get(card.id, 'shared', 'incerteza'),
                     t.get(card.id, 'shared', 'impacto')
@@ -69,7 +69,7 @@
                   console.error('Erro ao calcular as métricas:', error);
                 });
               }).catch(function (error) {
-                console.error('Erro ao obter informações do board:', error);
+                console.error('Erro ao obter cartões:', error);
               });
             }
           }
