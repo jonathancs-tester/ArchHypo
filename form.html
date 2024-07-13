@@ -25,6 +25,10 @@
       border: none;
       cursor: pointer;
     }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -32,11 +36,37 @@
   <script>
     const t = TrelloPowerUp.iframe();
 
+    const loadValues = () => {
+      return Promise.all([
+        t.get('card', 'shared', 'incerteza'),
+        t.get('card', 'shared', 'impacto'),
+        t.get('card', 'shared', 'plano-tecnico')
+      ]).then(([incerteza, impacto, planoTecnico]) => {
+        document.getElementById('incerteza').value = incerteza || '';
+        document.getElementById('impacto').value = impacto || '';
+        document.getElementById('plano-tecnico').value = planoTecnico || '';
+      });
+    };
+
     const submitForm = (e) => {
       e.preventDefault();
-      const incerteza = document.getElementById('incerteza').value;
-      const impacto = document.getElementById('impacto').value;
+      const incerteza = parseFloat(document.getElementById('incerteza').value);
+      const impacto = parseFloat(document.getElementById('impacto').value);
       const planoTecnico = document.getElementById('plano-tecnico').value;
+
+      const errorMessage = document.getElementById('error-message');
+
+      if (isNaN(incerteza) || incerteza <= 0) {
+        errorMessage.textContent = 'Incerteza deve ser um valor positivo.';
+        return;
+      }
+
+      if (isNaN(impacto) || impacto <= 0) {
+        errorMessage.textContent = 'Impacto deve ser um valor positivo.';
+        return;
+      }
+
+      errorMessage.textContent = '';
 
       return Promise.all([
         t.set('card', 'shared', 'incerteza', incerteza),
@@ -46,22 +76,23 @@
     };
 
     t.render(() => {
+      loadValues();
       document.getElementById('form').addEventListener('submit', submitForm);
     });
   </script>
 
   <form id="form" class="form-container">
     <label for="incerteza">Incerteza:</label>
-    <input type="number" id="incerteza" name="incerteza" required>
+    <input type="number" id="incerteza" name="incerteza" required min="0" step="any">
 
     <label for="impacto">Impacto:</label>
-    <input type="number" id="impacto" name="impacto" required>
+    <input type="number" id="impacto" name="impacto" required min="0" step="any">
 
     <label for="plano-tecnico">Plano Técnico:</label>
     <textarea id="plano-tecnico" name="plano-tecnico" required></textarea>
 
     <button type="submit">Salvar</button>
+    <div id="error-message" class="error"></div>
   </form>
 </body>
 </html>
-
