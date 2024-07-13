@@ -40,6 +40,9 @@
                       incerteza: parseFloat(incerteza) || 0,
                       impacto: parseFloat(impacto) || 0
                     };
+                  }).catch(function (error) {
+                    console.error(`Erro ao obter valores do card ${card.id}:`, error);
+                    return { incerteza: 0, impacto: 0 };
                   });
                 });
 
@@ -83,6 +86,9 @@
               });
             }
             return badges;
+          }).catch(function (error) {
+            console.error(`Erro ao obter badges do card ${card.id}:`, error);
+            return [];
           });
         });
       }
