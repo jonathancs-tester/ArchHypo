@@ -1,37 +1,79 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
+  <style>
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+    .form-container label {
+      margin: 10px 0 5px;
+    }
+    .form-container input, .form-container textarea {
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-container button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #0079bf;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body>
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script>
+    const t = TrelloPowerUp.iframe();
+
+    const submitForm = (e) => {
+      e.preventDefault();
+      const incerteza = document.getElementById('incerteza').value;
+      const impacto = document.getElementById('impacto').value;
+      const planoTecnico = document.getElementById('plano-tecnico').value;
+
+      t.set('card', 'shared', 'incerteza', incerteza);
+      t.set('card', 'shared', 'impacto', impacto);
+      t.set('card', 'shared', 'plano-tecnico', planoTecnico);
+
+      t.closePopup();
+    };
+
     TrelloPowerUp.initialize({
       'card-buttons': function (t, options) {
         return [
           {
             icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
-            text: "Hello World!",
+            text: "Adicionar Valores",
             callback: function (t) {
-              return t.card('id', 'name').then(card => alert(`Hello from ${card.name} (id: ${card.id})!`))
+              return t.popup({
+                title: 'Adicionar Valores',
+                url: './form.html'
+              });
             }
           }
-        ]
-      },
-      'board-buttons': function (t, options) {
-        return [
-          { 
-            icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
-            text: "Hello World!",
-            callback: function (t) {
-              return t.board().then(board => alert(`Hello world!`))
-            }
-          }
-        ]
+        ];
       }
-    })
+    });
   </script>
+
+  <form class="form-container" onsubmit="submitForm(event)">
+    <label for="incerteza">Incerteza:</label>
+    <input type="number" id="incerteza" name="incerteza" required>
+
+    <label for="impacto">Impacto:</label>
+    <input type="number" id="impacto" name="impacto" required>
+
+    <label for="plano-tecnico">Plano Técnico:</label>
+    <textarea id="plano-tecnico" name="plano-tecnico" required></textarea>
+
+    <button type="submit">Salvar</button>
+  </form>
 </body>
 </html>
+
