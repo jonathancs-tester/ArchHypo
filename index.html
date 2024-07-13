@@ -32,13 +32,14 @@
             callback: function (t) {
               return t.board('all').then(function (board) {
                 let cardPromises = board.cards.map(function (card) {
-                  return t.get(card.id, 'shared', 'incerteza').then(function (incerteza) {
-                    return t.get(card.id, 'shared', 'impacto').then(function (impacto) {
-                      return {
-                        incerteza: parseFloat(incerteza) || 0,
-                        impacto: parseFloat(impacto) || 0
-                      };
-                    });
+                  return Promise.all([
+                    t.get(card.id, 'shared', 'incerteza'),
+                    t.get(card.id, 'shared', 'impacto')
+                  ]).then(function ([incerteza, impacto]) {
+                    return {
+                      incerteza: parseFloat(incerteza) || 0,
+                      impacto: parseFloat(impacto) || 0
+                    };
                   });
                 });
 
@@ -52,7 +53,11 @@
                   });
 
                   alert(`Total Incerteza: ${totalIncerteza}\nTotal Impacto: ${totalImpacto}`);
+                }).catch(function (error) {
+                  console.error('Erro ao calcular as métricas:', error);
                 });
+              }).catch(function (error) {
+                console.error('Erro ao obter informações do board:', error);
               });
             }
           }
