@@ -5,50 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ArchHypo Metrics</title>
   <style>
-    /* Estilos para o modal */
-    #customModal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
+    .popup-content {
       text-align: center;
-      max-width: 300px;
-      margin: auto;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-
-    .close-btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <!-- Modal customizado -->
-  <div id="customModal">
-    <div class="modal-content">
-      <p id="modalText">Total Incerteza: 0<br>Total Impacto: 0</p>
-      <button class="close-btn" onclick="closeModal()">OK</button>
-    </div>
-  </div>
-
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script>
     TrelloPowerUp.initialize({
@@ -73,12 +36,23 @@
             icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
             text: "ArchHypo Metrics",
             callback: function (t) {
+              console.log("Clicou no botão ArchHypo Metrics");
+
               return t.cards('all').then(function (cards) {
                 if (!cards) {
                   console.error("Nenhum cartão encontrado.");
-                  openModal("Nenhum cartão encontrado.");
-                  return;
+                  return t.popup({
+                    title: 'Erro',
+                    items: [{
+                      text: 'Nenhum cartão encontrado!',
+                      callback: function (t) {
+                        return t.closePopup();
+                      }
+                    }]
+                  });
                 }
+
+                console.log("Cartões encontrados:", cards);
 
                 let cardPromises = cards.map(function (card) {
                   return Promise.all([
@@ -104,7 +78,27 @@
                     totalImpacto += result.impacto;
                   });
 
-                  openModal(`Total Incerteza: ${totalIncerteza}<br>Total Impacto: ${totalImpacto}`);
+                  console.log("Total Incerteza:", totalIncerteza);
+                  console.log("Total Impacto:", totalImpacto);
+
+                  // Abrir um popup com os valores calculados
+                  return t.popup({
+                    title: 'ArchHypo Metrics',
+                    items: [
+                      {
+                        text: `Total Incerteza: ${totalIncerteza}`
+                      },
+                      {
+                        text: `Total Impacto: ${totalImpacto}`
+                      },
+                      {
+                        text: 'Fechar',
+                        callback: function (t) {
+                          return t.closePopup();
+                        }
+                      }
+                    ]
+                  });
                 }).catch(function (error) {
                   console.error('Erro ao calcular as métricas:', error);
                 });
@@ -142,17 +136,6 @@
         });
       }
     });
-
-    // Função para abrir o modal com mensagem personalizada
-    function openModal(message) {
-      document.getElementById('modalText').innerHTML = message;
-      document.getElementById('customModal').style.display = 'flex';
-    }
-
-    // Função para fechar o modal
-    function closeModal() {
-      document.getElementById('customModal').style.display = 'none';
-    }
   </script>
 </body>
 </html>
