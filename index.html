@@ -18,7 +18,7 @@
       'card-buttons': function (t, options) {
         return [
           {
-            icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
+            icon: "https://img.icons8.com/ios/50/000000/combo-chart.png", // Novo ícone de estatísticas
             text: "ArchHypo Values",
             callback: function (t) {
               return t.popup({
@@ -33,11 +33,9 @@
       'board-buttons': function (t, options) {
         return [
           {
-            icon: "https://i.ibb.co/6sbknH0/logo-stroke-32pt-style-2-no-stroke.png",
+            icon: "https://img.icons8.com/ios/50/000000/combo-chart.png", // Novo ícone de estatísticas
             text: "ArchHypo Metrics",
             callback: function (t) {
-              console.log("Clicou no botão ArchHypo Metrics");
-
               return t.cards('all').then(function (cards) {
                 if (!cards) {
                   console.error("Nenhum cartão encontrado.");
@@ -78,18 +76,17 @@
                     totalImpacto += result.impacto;
                   });
 
-                  console.log("Total Incerteza:", totalIncerteza);
-                  console.log("Total Impacto:", totalImpacto);
-
-                  // Abrir um popup com os valores calculados
+                  // Popup com texto não clicável para as métricas
                   return t.popup({
                     title: 'ArchHypo Metrics',
                     items: [
                       {
-                        text: `Total Incerteza: ${totalIncerteza}`
+                        text: `Total Incerteza: ${totalIncerteza}`,
+                        interactive: false // Texto não clicável
                       },
                       {
-                        text: `Total Impacto: ${totalImpacto}`
+                        text: `Total Impacto: ${totalImpacto}`,
+                        interactive: false // Texto não clicável
                       },
                       {
                         text: 'Fechar',
